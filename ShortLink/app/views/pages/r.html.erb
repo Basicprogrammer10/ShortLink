@@ -1,0 +1,30 @@
+<%
+  code = params["code"].downcase
+
+  begin
+    puts "url: " + $db.query("SELECT url FROM data WHERE code=?", code).next[0]
+    url = $db.query("SELECT url FROM data WHERE code=?", code).next[0]
+  rescue
+    url = "/create"
+  end
+
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Short Link V2</title>
+  <meta charset="UTF-8"/>
+  <meta http-equiv = "refresh" content = "0; url = <%= url %>" />
+</head>
+<body>
+<h1 style="text-align: center;font-size: 50px;padding-bottom: 0px;margin-bottom: 0px;">Short Link</h1>
+<h2 style="text-align: center;font-size: 25px;padding-bottom: 0px;margin-top: 0px;">By: Connor Slade</h2>
+<div class="login-page">
+  <div class="form" style="padding: 45px 45px 45px;">
+    <p style="display: inline">Your are being redirected to: </p> <a href="<%= url %>"><code><%= url %></code></a>
+    <br/><a>You may need to click the link if you have automatic redirection disabled.</a>
+  </div>
+</div>
+<script>window.location.href = '<%= url %>';</script>
+</body>
+</html>

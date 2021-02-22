@@ -247,3 +247,12 @@ body {
 code{
     display: inline;
 }
+
+@media only screen and (max-width: 700px) {
+    .form {
+        max-width: 60vw;
+    }
+    .login-page {
+        width: 100vw;
+    }
+}

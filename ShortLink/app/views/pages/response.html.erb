@@ -1,30 +1,15 @@
 <%
-
   o = [('a'..'z')].map(&:to_a).flatten
-  r = (0...5).map { o[rand(o.length)] }.join
+  r = (0...4).map { o[rand(o.length)] }.join
+  url = request.GET['url']
 
-  url_copy  = $db.query('SELECT * FROM data WHERE url LIKE ?', request.GET['url'].to_s)
-  code_copy = $db.query('SELECT code FROM data WHERE code LIKE ?', r.to_s)
-
-  begin
-    code_copy = code_copy[0]
-  rescue
-    code_copy = ''
-    puts 'code copy catch'
+  if request.GET['url'].include? "https://"
+  elsif request.GET['url'].include? "http://"
+  else
+    url = "http://" + request.GET['url']
   end
 
-  begin
-    url_copy=url_copy[1]
-  rescue
-    url_copy = ''
-    puts 'url copy catch'
-  end
-
-  if url_copy.next == request.GET['url'].to_s
-      puts 'same url'
-  elsif code_copy.next != r
-    $db.execute('INSERT INTO data (code, url) VALUES (?, ?)', r, request.GET['url'])
-  end
+  $db.execute('INSERT INTO data (code, url) VALUES (?, ?)', r, url)
 %>
 
 <!DOCTYPE html>
@@ -39,7 +24,8 @@
 <h2 style="text-align: center;font-size: 25px;padding-bottom: 0px;margin-top: 0px;">By: Connor Slade</h2>
 <div class="login-page">
   <div class="form" style="padding: 45px 45px 45px;">
-    <p>Your ShortLink is </p> <a href="<%= 'http://localhost:3000/r/' + r %>"><code><%= 'http://localhost:3000/r/' + r %></code></a>
+    <p>Your ShortLink is </p>
+    <a href="<%= 'http://localhost:3000/r/' + r %>"><code><%= 'http://localhost:3000/r/' + r %></code></a>
   </div>
 </div>
 </body>

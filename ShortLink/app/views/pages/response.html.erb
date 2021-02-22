@@ -1,0 +1,23 @@
+<% o = [('a'..'z')].map(&:to_a).flatten
+   r =(0...5).map { o[rand(o.length)] }.join %>
+
+<% File.write("data.csv", r + "," + request.GET['url'] + "\n", mode: "a") %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Short Link V2</title>
+  <meta charset="UTF-8"/>
+</head>
+<%= File.open("data.csv").read %>
+<body>
+<h1 style="text-align: center;font-size: 50px;padding-bottom: 0px;margin-bottom: 0px;">Short Link</h1>
+<h2 style="text-align: center;font-size: 25px;padding-bottom: 0px;margin-top: 0px;">By: Connor Slade</h2>
+<div class="login-page">
+  <div class="form" style="padding: 45px 45px 45px;">
+    <p>Your ShortLink is </p> <a href="<%= 'http://localhost:3000/r/' + r %>"><code><%= 'http://localhost:3000/r/' + r %></code></a>
+  </div>
+</div>
+</body>
+</html>

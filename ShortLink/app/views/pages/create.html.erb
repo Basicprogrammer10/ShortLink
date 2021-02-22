@@ -1,131 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>Short Link V2</title>
   <meta charset="UTF-8"/>
 </head>
-
 <body>
 <h1 style="text-align: center;font-size: 50px;padding-bottom: 0px;margin-bottom: 0px;">Short Link</h1>
 <h2 style="text-align: center;font-size: 25px;padding-bottom: 0px;margin-top: 0px;">By: Connor Slade</h2>
 <div class="login-page">
   <div class="form">
-    <form class="login-form" id="login" action="javascript:setup();">
+    <form class="login-form" id="login" action="/response">
       <label>
-        <input type="text" placeholder="Link"/>
+        <input name="url" type="text" placeholder="Link"/>
       </label>
+      <button id="loginSubmit" type="submit">Shorten Link</button>
     </form>
-    <button id="loginSubmit" onclick="setup();">Shorten Link</button>
   </div>
 </div>
-
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p id="MessageBox" style="margin-bottom: 24px;"></p>
-    <div class="tooltip">
-      <button id="coppyButton" onclick="myFunction()" onmouseout="outFunc()">
-        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-        Copy ShortLink
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-    function makeid(length) {
-        let result = "";
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%";
-        const charactersLength = characters.length;
-        for (var i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-    }
-
-    function resetFeild() {
-        document.getElementById("myModal").style.display = "none";
-    }
-
-    function setup() {
-        let input = document.getElementById("login").elements[0].value;
-        let code = makeid(3);
-        if (input === "") {
-            htmlMessage("MessageBox", "Enter a Vaild URL", ['color = "orange"']);
-            window.setTimeout(resetFeild, 3000);
-            return;
-        }
-        if (input.includes("https://")) {
-        } else if (input.includes("https://")) {
-        } else {
-            input = "http://" + input;
-        }
-        try {
-            fetch(
-                window.location.href + "api/?url=" + btoa(input) + "?code=" + btoa(code)
-            ).then(function (response) {
-                if (response.status === 201) {
-                    //document.getElementById("login").elements[0].value = "";
-                    window.code = code;
-                    htmlMessage(
-                        "MessageBox",
-                        "Your Short Link is: " + window.location.origin + "/r/" + code,
-                        ['color = "green"']
-                    );
-                } else if (response.status === 409) {
-                    setup();
-                } else {
-                    htmlMessage(
-                        "MessageBox",
-                        "An Error Occurred... What?? don't blame me!",
-                        ['color = "red"']
-                    );
-                }
-            });
-        } catch {
-            confirm("OOF");
-        }
-    }
-
-    function htmlMessage(id, data, css) {
-        document.getElementById(id).innerHTML = data;
-        for (let i = 0; i < css.length; i++) {
-            eval('document.getElementById("' + id + '").style.' + css[i] + ";");
-        }
-        let modal = document.getElementById("myModal");
-        let span = document.getElementsByClassName("close")[0];
-        modal.style.display = "block";
-        span.onclick = function () {
-            modal.style.display = "none";
-        };
-        window.onclick = function (event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-    }
-
-    function myFunction() {
-        let oldValue = document.getElementById("login").elements[0].value;
-        document.getElementById("login").elements[0].value = window.location.origin + "/r/" + window.code;
-        let copyText = document.getElementById("login").elements[0];
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        document.getElementById("login").elements[0].value = '';
-
-        var tooltip = document.getElementById("myTooltip");
-        tooltip.innerHTML = "Copied: " + copyText.value;
-    }
-
-    function outFunc() {
-        const tooltip = document.getElementById("myTooltip");
-        tooltip.innerHTML = "Copy to clipboard";
-    }
-
-</script>
+<%=
+  require 'csv'
+  table = CSV.parse(File.read("data.csv"), headers: true)
+  table[0][0]
+%>
 </body>
-
 </html>

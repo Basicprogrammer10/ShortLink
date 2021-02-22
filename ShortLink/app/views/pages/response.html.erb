@@ -1,7 +1,31 @@
-<% o = [('a'..'z')].map(&:to_a).flatten
-   r =(0...5).map { o[rand(o.length)] }.join %>
+<%
 
-<% File.write("data.csv", r + "," + request.GET['url'] + "\n", mode: "a") %>
+  o = [('a'..'z')].map(&:to_a).flatten
+  r = (0...5).map { o[rand(o.length)] }.join
+
+  url_copy  = $db.query('SELECT * FROM data WHERE url LIKE ?', request.GET['url'].to_s)
+  code_copy = $db.query('SELECT code FROM data WHERE code LIKE ?', r.to_s)
+
+  begin
+    code_copy = code_copy[0]
+  rescue
+    code_copy = ''
+    puts 'code copy catch'
+  end
+
+  begin
+    url_copy=url_copy[1]
+  rescue
+    url_copy = ''
+    puts 'url copy catch'
+  end
+
+  if url_copy.next == request.GET['url'].to_s
+      puts 'same url'
+  elsif code_copy.next != r
+    $db.execute('INSERT INTO data (code, url) VALUES (?, ?)', r, request.GET['url'])
+  end
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +34,6 @@
   <title>Short Link V2</title>
   <meta charset="UTF-8"/>
 </head>
-<%= File.open("data.csv").read %>
 <body>
 <h1 style="text-align: center;font-size: 50px;padding-bottom: 0px;margin-bottom: 0px;">Short Link</h1>
 <h2 style="text-align: center;font-size: 25px;padding-bottom: 0px;margin-top: 0px;">By: Connor Slade</h2>

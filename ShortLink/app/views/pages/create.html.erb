@@ -17,10 +17,5 @@
     </form>
   </div>
 </div>
-<%=
-  require 'csv'
-  table = CSV.parse(File.read("data.csv"), headers: true)
-  table[0][0]
-%>
 </body>
 </html>
